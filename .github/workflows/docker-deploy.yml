@@ -37,7 +37,7 @@ jobs:
 
       # 構建 Docker 映像
       - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/friends-frontend:${{ github.sha }} .
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/friends-frontend:${{ github.sha }} -f docker/Dockerfile .
 
       # 推送 Docker 映像到 Docker Hub
       - name: Push Docker image
