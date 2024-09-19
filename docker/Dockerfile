@@ -20,7 +20,7 @@ RUN npm run build
 FROM nginx:alpine
 
 # 8. 複製前端構建的輸出到 Nginx 的默認目錄
-COPY --from=build /app/build /usr/share/nginx/html
+COPY --from=build /app/dist /usr/share/nginx/html
 
 # 9. 暴露端口
 EXPOSE 80
