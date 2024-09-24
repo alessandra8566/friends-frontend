@@ -122,7 +122,7 @@ const UserInfoForm = () => {
                     alt="emptyImg"
                     className="max-w-52 cursor-pointer"
                     onClick={() => {
-                      if (watchAvatars[0].url !== EmptyImg) return
+                      if (watchAvatars[field.index].url !== EmptyImg) return
                       uploadAvatarInputRef.current?.[field.index]?.click()}
                     }
                   />

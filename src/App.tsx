@@ -1,13 +1,13 @@
 import { BASE_URL } from "./config/env"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { RouterProvider, createBrowserRouter } from "react-router-dom"
+import { createHashRouter, RouterProvider } from "react-router-dom"
 import routes from "./router"
 import { Loader2 } from "lucide-react"
 import { Toaster } from "./components/ui/sonner"
 
 const queryClient = new QueryClient()
 
-const router = createBrowserRouter(routes, {
+const router = createHashRouter(routes, {
   basename: BASE_URL,
 })
 
