@@ -31,7 +31,7 @@ const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(
             else if (ref) ref.current = node
           }}
           className={cn(
-            "border-none text-base focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
+            "border-none text-sm focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
             inputClass
           )}
         />

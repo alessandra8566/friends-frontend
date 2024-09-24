@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { RouterProvider, createBrowserRouter } from "react-router-dom"
 import routes from "./router"
 import { Loader2 } from "lucide-react"
+import { Toaster } from "./components/ui/sonner"
 
 const queryClient = new QueryClient()
 
@@ -24,6 +25,7 @@ const App = () => {
           </div>
         }
       />
+      <Toaster />
     </QueryClientProvider>
   )
 }
