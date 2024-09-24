@@ -19,5 +19,10 @@ export const actions = {
     success: "更新成功",
     error: "更新失敗",
   },
+  delete: {
+    loading: "刪除中...",
+    success: "刪除成功",
+    error: "刪除失敗",
+  },
   loading: "正在加載...",
 }

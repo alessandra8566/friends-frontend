@@ -41,9 +41,9 @@ const UserNav = () => {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>首頁</DropdownMenuItem>
-          <DropdownMenuItem>聊天室</DropdownMenuItem>
-          <DropdownMenuItem>我的最愛</DropdownMenuItem>
-          <DropdownMenuItem>個人設定</DropdownMenuItem>
+          {/* <DropdownMenuItem>聊天室</DropdownMenuItem> */}
+          {/* <DropdownMenuItem>我的最愛</DropdownMenuItem> */}
+          <DropdownMenuItem onClick={() => navigate("profile")}>個人設定</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={onLogout}>登出</DropdownMenuItem>

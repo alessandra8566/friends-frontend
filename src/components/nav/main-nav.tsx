@@ -14,7 +14,7 @@ const MainNav = ({ className, ...props }: React.HTMLAttributes<HTMLElement>) => 
       >
         首頁
       </NavLink>
-      <NavLink
+      {/* <NavLink
         to={"/chat"}
         className={({ isActive }) =>
           cn("text-sm font-medium transition-colors hover:text-primary", {
@@ -33,7 +33,7 @@ const MainNav = ({ className, ...props }: React.HTMLAttributes<HTMLElement>) => 
         }
       >
         我的最愛
-      </NavLink>
+      </NavLink> */}
       <NavLink
         to="/profile"
         className={({ isActive }) =>

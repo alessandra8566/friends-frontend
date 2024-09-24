@@ -7,18 +7,18 @@ const sidebarNavItems = [
     title: "個人資料",
     to: "/profile",
   },
-  {
-    title: "帳戶資料",
-    to: "/profile/account",
-  },
-  {
-    title: "交友偏好",
-    to: "/profile/prefer",
-  },
-  {
-    title: "通知設定",
-    to: "/profile/notification",
-  },
+  // {
+  //   title: "帳戶資料",
+  //   to: "/profile/account",
+  // },
+  // {
+  //   title: "交友偏好",
+  //   to: "/profile/prefer",
+  // },
+  // {
+  //   title: "通知設定",
+  //   to: "/profile/notification",
+  // },
 ]
 
 const Profile = () => {

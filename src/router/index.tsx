@@ -53,6 +53,13 @@ const routes = [
             },
           },
         ]
+      },
+      {
+        path: "view/:id",
+        async lazy() {
+          const comp = await import("@/pages/view")
+          return { Component: comp.default }
+        },
       }
     ],
   },

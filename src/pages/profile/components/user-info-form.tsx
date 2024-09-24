@@ -8,19 +8,21 @@ import { FormTextArea } from "@/components/form/textarea"
 import { ChangeEvent, useMemo, useRef, useState } from "react"
 import { Input } from "@/components/ui/input"
 import CropperDialog from "./cropper-dialog"
-import { Edit } from "lucide-react"
+import { CircleX } from "lucide-react"
 import { useUserInfo } from "@/hooks/session-storage"
 import { useMutation, useQuery } from "@tanstack/react-query"
-import { apiGetProfile, apiPatchProfile } from "@/api/profile"
+import { apiDeleteImage, apiGetProfile, apiPatchProfile } from "@/api/profile"
 import { toast } from "sonner"
 import { actions } from "@/utils/toast"
+import EmptyImg from "@/assets/images/empty-image.jpg"
+import { Image } from "@/utils/types/profile"
 
 const UserInfoForm = () => {
   const uploadAvatarInputRef = useRef<(HTMLInputElement | null)[]>([])
   const [userInfo] = useUserInfo()
   const [open, setOpen] = useState(false)
 
-  const { data: profile } = useQuery({
+  const { data: profile, refetch } = useQuery({
     queryKey: ["profile"],
     queryFn: apiGetProfile,
     select: (res) => res.data,
@@ -29,6 +31,10 @@ const UserInfoForm = () => {
   const userInfoValues = useMemo(
     () => ({
       ...userInfoFormDefault,
+      images: userInfoFormDefault.images.map((image) => {
+        const matchingImage = profile?.images.find((item) => item.index === image.index)
+        return matchingImage ? { ...image, ...matchingImage } : image
+      }),
       username: userInfo?.name || "",
       description: profile?.description,
     }),
@@ -48,6 +54,7 @@ const UserInfoForm = () => {
   const watchCurrentAvatar = watch("current_image")
 
   const patchProfileMutation = useMutation({ mutationFn: apiPatchProfile })
+  const deleteProfileImageMutation = useMutation({ mutationFn: apiDeleteImage })
 
   const handleAvatarFileChange = (e: ChangeEvent<HTMLInputElement>, index: number) => {
     if (uploadAvatarInputRef.current[index] && e.target.files?.length) {
@@ -63,16 +70,25 @@ const UserInfoForm = () => {
   }
 
   const onSubmit = (values: z.infer<typeof userInfoFormSchema>) => {
-    console.log(values)
-
     const submit = async () => {
       const profilePayload = {
         id: profile?.id || "",
         data: { description: values.description || "" },
       }
       await patchProfileMutation.mutateAsync(profilePayload)
+      refetch()
     }
     toast.promise(submit, actions.update)
+  }
+
+  const onDeleteImage = (image: Image) => {
+    const deleteImage = async () => {
+      if (image && image.id) {
+        await deleteProfileImageMutation.mutateAsync({ profile_id: profile?.id || "", image_id: image.id })
+        refetch()
+      }
+    }
+    toast.promise(deleteImage, actions.delete)
   }
 
   return (
@@ -86,9 +102,12 @@ const UserInfoForm = () => {
                 src={watchAvatars[0].url}
                 alt="emptyImg"
                 className="max-w-52 cursor-pointer"
-                onClick={() => uploadAvatarInputRef.current?.[0]?.click()}
+                onClick={() => {
+                  if (watchAvatars[0].url !== EmptyImg) return
+                  uploadAvatarInputRef.current?.[0]?.click()
+                }}
               />
-              <Edit className="absolute bottom-2 right-2 h-6 w-6 text-white" />
+              {watchAvatars[0].url !== EmptyImg && <CircleX className="absolute right-2 top-2 h-6 w-6 text-red-700" onClick={() => onDeleteImage(watchAvatars[0] as Image)} />}
             </div>
           </div>
         </div>
@@ -102,9 +121,12 @@ const UserInfoForm = () => {
                     src={field.url}
                     alt="emptyImg"
                     className="max-w-52 cursor-pointer"
-                    onClick={() => uploadAvatarInputRef.current?.[field.index]?.click()}
+                    onClick={() => {
+                      if (watchAvatars[0].url !== EmptyImg) return
+                      uploadAvatarInputRef.current?.[field.index]?.click()}
+                    }
                   />
-                  <Edit className="absolute bottom-2 right-2 h-6 w-6 text-white" />
+                  {field.url !== EmptyImg && <CircleX className="absolute right-2 top-2 h-6 w-6 text-red-700" onClick={() => onDeleteImage(field as Image)} />}
                 </div>
               ) : null,
             )}
@@ -126,7 +148,9 @@ const UserInfoForm = () => {
       <FormTextArea name="description" labelDisplay="block" label="自我介紹" />
       <Button onClick={handleSubmit(onSubmit)}>儲存</Button>
 
-      {watchCurrentAvatar && <CropperDialog image={watchCurrentAvatar} open={open} setOpen={setOpen} profile_id={profile?.id || ""} />}
+      {watchCurrentAvatar && (
+        <CropperDialog image={watchCurrentAvatar} open={open} setOpen={setOpen} profile_id={profile?.id || ""} />
+      )}
     </FormProvider>
   )
 }
