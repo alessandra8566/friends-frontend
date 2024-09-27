@@ -55,13 +55,13 @@ const View = () => {
                 )}
               </CarouselContent>
             </Carousel>
-            <div className="absolute bottom-2 left-2 flex w-full justify-center">
+            <div className="absolute bottom-2 flex w-full justify-center">
               <div className="flex w-4/5 gap-2">
                 {user?.images.map((_, index) => (
                   <span
                     key={index}
                     className={cn("block h-1 w-full bg-slate-300 cursor-pointer", {
-                      "bg-slate-900": index === current - 1,
+                      "bg-slate-600": index === current - 1,
                     })}
                     onClick={() => api?.scrollTo(index)}
                   />
