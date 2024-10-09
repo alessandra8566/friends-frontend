@@ -1,5 +1,23 @@
 import { z } from "zod"
 import EmptyImg from "@/assets/images/empty-image.jpg"
+import { SelectValueItem } from "@/components/select"
+import { constellation, education, profileEnumTran, frequency, job, languageUse, location, commonEnumTran } from "@/utils/types"
+
+export const locationSelectItems = location.map<SelectValueItem>((item) => ({ text: item, value: item }))
+export const educationSelectItems = education.map<SelectValueItem>((item) => ({
+  text: item === "null" ? commonEnumTran.null : item,
+  value: item,
+}))
+export const constellationSelectItems = constellation.map<SelectValueItem>((item) => ({
+  text: item === "null" ? commonEnumTran.null : item,
+  value: item,
+}))
+export const languageUseSelectItems = languageUse.map<SelectValueItem>((item) => ({ text: item, value: item }))
+export const frequencySelectItems = frequency.map<SelectValueItem>((item) => ({ text: profileEnumTran[item], value: item }))
+export const jobSelectItems = job.map<SelectValueItem>((item) => ({
+  text: item === "null" ? commonEnumTran.null : item,
+  value: item,
+}))
 
 export const imageInfoDefault: z.infer<typeof imageInfoSchema> = {
   id: "",
@@ -9,7 +27,7 @@ export const imageInfoDefault: z.infer<typeof imageInfoSchema> = {
   url: EmptyImg,
 }
 
-export const userInfoFormDefault: z.infer<typeof userInfoFormSchema> = {
+export const userAvatarFormDefault: z.infer<typeof userAvatarFormSchema> = {
   images: Array(7)
     .fill(null)
     .map((_, index) => ({
@@ -17,8 +35,6 @@ export const userInfoFormDefault: z.infer<typeof userInfoFormSchema> = {
       index,
     })),
   current_image: imageInfoDefault,
-  username: "",
-  description: "",
 }
 
 export const imageInfoSchema = z.object({
@@ -29,9 +45,39 @@ export const imageInfoSchema = z.object({
   index: z.number(),
 })
 
-export const userInfoFormSchema = z.object({
+export const userAvatarFormSchema = z.object({
   images: z.array(imageInfoSchema),
   current_image: imageInfoSchema,
-  username: z.string().min(2, { message: "名字最少2個字元" }).max(30, { message: "名字最多30個字" }).optional(),
-  description: z.string().max(600, { message: "自我介紹最多30個字" }).optional(),
 })
+
+export const userInfoFormSchema = z.object({
+  name: z.string().optional(),
+  introduce: z.string().optional(),
+  like_style: z.string().optional(),
+  constellation: z.preprocess((value) => (value !== "null" ? value : undefined), z.enum(constellation).optional()),
+  location: z.enum(location).optional(),
+  weight: z.number().optional(),
+  height: z.number().optional(),
+  job: z.preprocess((value) => (value !== "null" ? value : undefined), z.enum(job).optional()),
+  education: z.preprocess((value) => (value !== "null" ? value : undefined), z.enum(education).optional()),
+  hobby: z.string().optional(),
+  smoke: z.enum(frequency).optional(),
+  drink: z.enum(frequency).optional(),
+  languages: z.enum(languageUse).optional(),
+})
+
+export const userInfoFormDefault: z.infer<typeof userInfoFormSchema> = {
+  name: "",
+  introduce: "",
+  like_style: "",
+  constellation: "null",
+  location: "台北市",
+  weight: 60,
+  height: 170,
+  job: "null",
+  education: "null",
+  hobby: "",
+  smoke: "never",
+  drink: "never",
+  languages: "中文",
+}

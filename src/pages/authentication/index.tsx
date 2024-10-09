@@ -27,7 +27,7 @@ const UserAuthentication = () => {
         <div className="absolute inset-0 bg-zinc-900" />
         <div className="relative z-20 flex items-center text-lg font-medium">
           <Icons.logo className="h-24 w-24" />
-          Acme Inc
+          Acms
         </div>
         <div className="relative z-20 mt-auto">
           <blockquote className="space-y-2">

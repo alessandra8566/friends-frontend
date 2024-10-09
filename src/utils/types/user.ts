@@ -16,6 +16,8 @@ export interface JwtType {
   user_id: string
   name: string
   email: string
+  birthday: string
+  gender: string
   role: Role
   exp: number
 }
@@ -24,5 +26,7 @@ export type CurrentUserInfo = {
   user_id: string
   email: string
   name: string
+  birthday: string
+  gender: string
   role: Role
 }

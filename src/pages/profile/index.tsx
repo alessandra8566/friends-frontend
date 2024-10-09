@@ -5,7 +5,11 @@ import { Outlet } from "react-router-dom"
 const sidebarNavItems = [
   {
     title: "個人資料",
-    to: "/profile",
+    to: "/profile/info",
+  },
+  {
+    title: "個人頭像",
+    to: "/profile/avatar",
   },
   // {
   //   title: "帳戶資料",

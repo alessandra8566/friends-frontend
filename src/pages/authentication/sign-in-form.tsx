@@ -2,7 +2,7 @@ import { Icons } from "@/components/icons"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/utils/shadcn"
 import { useNavigate } from "react-router-dom"
-import { signInDefault, signInFormSchema } from "./utils"
+import { genderSelectItem, signInDefault, signInFormSchema } from "./utils"
 import { FormProvider, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -15,15 +15,17 @@ import { jwtDecode } from "jwt-decode"
 import { useSessionStorage } from "usehooks-ts"
 import { JwtType } from "@/utils/types/user"
 import { useUserInfo } from "@/hooks/session-storage"
+import { FormRadioGroup } from "@/components/form/radio-group"
+import { FormCalendar } from "@/components/form/calendar"
 
 type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement>
 
-const LoginForm = ({ className, ...props }: UserAuthFormProps) => {
+const SignInForm = ({ className, ...props }: UserAuthFormProps) => {
   const navigate = useNavigate()
 
   const [, setToken] = useSessionStorage("token", "")
   const [, setUserInfo] = useUserInfo()
-  
+
   const form = useForm<z.infer<typeof signInFormSchema>>({
     resolver: zodResolver(signInFormSchema),
     values: signInDefault,
@@ -49,7 +51,7 @@ const LoginForm = ({ className, ...props }: UserAuthFormProps) => {
   }
 
   return (
-    <div className="lg:p-8">
+    <form className="lg:p-8">
       <FormProvider {...form}>
         <div className="mx-auto flex w-[350px] flex-col justify-center space-y-6">
           <div className="flex flex-col space-y-2 text-center">
@@ -59,6 +61,11 @@ const LoginForm = ({ className, ...props }: UserAuthFormProps) => {
           <div className={cn("grid gap-6", className)} {...props}>
             <div className="grid gap-2">
               <div className="grid gap-1">
+                <FormRadioGroup
+                  name="gender"
+                  className="h-9 justify-center"
+                  radioGroupProps={{ items: genderSelectItem }}
+                />
                 <FormInput
                   name="name"
                   inputProps={{
@@ -75,11 +82,21 @@ const LoginForm = ({ className, ...props }: UserAuthFormProps) => {
                     autoCorrect: "off",
                   }}
                 />
+                <FormCalendar name="birthday" calendarProps={{ placeholder: "請選擇生日" }} />
                 <FormInput
                   name="password"
                   inputProps={{
                     type: "password",
                     placeholder: "請輸入密碼",
+                    autoComplete: "new-password"
+                  }}
+                />
+                <FormInput
+                  name="re_password"
+                  inputProps={{
+                    type: "password",
+                    placeholder: "請確認密碼",
+                    autoComplete: "new-password"
                   }}
                 />
               </div>
@@ -111,17 +128,14 @@ const LoginForm = ({ className, ...props }: UserAuthFormProps) => {
           </p>
           <div className="relative flex justify-center text-xs">
             <span className="bg-background px-2 text-muted-foreground">已有帳號？</span>
-            <span
-              className="cursor-pointer bg-background underline underline-offset-4"
-              onClick={() => navigate("/")}
-            >
+            <span className="cursor-pointer bg-background underline underline-offset-4" onClick={() => navigate("/")}>
               會員登入
             </span>
           </div>
         </div>
       </FormProvider>
-    </div>
+    </form>
   )
 }
 
-export default LoginForm
+export default SignInForm

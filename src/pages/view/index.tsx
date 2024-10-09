@@ -1,4 +1,4 @@
-import { apiGetProfileById } from "@/api/profile"
+import { apiGetProfileById as apiGetUserProfileById } from "@/api/profile"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel"
 import { useQuery } from "@tanstack/react-query"
@@ -8,6 +8,8 @@ import { Heart, MessageCircleMore, Star } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
 import { useEffect, useState } from "react"
 import { cn } from "@/utils/shadcn"
+import { commonEnumTran, profileEnumTran } from "@/utils/types"
+import moment from "moment"
 
 const View = () => {
   const { id } = useParams()
@@ -17,15 +19,13 @@ const View = () => {
 
   const { data: user } = useQuery({
     queryKey: ["profile", id],
-    queryFn: () => apiGetProfileById(id ?? ""),
+    queryFn: () => apiGetUserProfileById(id ?? ""),
     select: (res) => res.data,
     enabled: !!id,
   })
 
   useEffect(() => {
-    if (!api) {
-      return
-    }
+    if (!api) return
 
     setCount(api.scrollSnapList().length)
     setCurrent(api.selectedScrollSnap() + 1)
@@ -81,10 +81,14 @@ const View = () => {
           </CardHeader>
           <CardContent className="space-y-0 px-2 py-0">
             <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-              <p className="text-sm text-muted-foreground">性別： 女</p>
-              <p className="text-sm text-muted-foreground">地區： 台北市</p>
-              <p className="text-sm text-muted-foreground">體重： 45KG</p>
-              <p className="text-sm text-muted-foreground">星座： 雙子</p>
+              <p className="text-sm text-muted-foreground">年齡： {moment().diff(moment(user?.birthday, "YYYY/MM/DD"), 'years')}</p>
+              <p className="text-sm text-muted-foreground">性別： {profileEnumTran[user?.gender ?? "female"]}</p>
+              <p className="text-sm text-muted-foreground">地區： {user?.location ?? commonEnumTran.notSet}</p>
+              <p className="text-sm text-muted-foreground">語言： {user?.languages}</p>
+              <p className="text-sm text-muted-foreground">身高： {user?.height ?? 0}cm</p>
+              <p className="text-sm text-muted-foreground">體重： {user?.weight ?? 0}KG</p>
+              <p className="text-sm text-muted-foreground">星座： {user?.constellation ?? commonEnumTran.notSet}</p>
+              <p className="text-sm text-muted-foreground">學歷： {user?.education ?? commonEnumTran.notSet}</p>
               <p className="text-sm text-muted-foreground">已驗證： 無</p>
             </div>
           </CardContent>
@@ -97,7 +101,7 @@ const View = () => {
             </p>
             <Separator className="my-2" />
             <div className="min-h-32 overflow-y-auto px-2 sm:min-h-48">
-              <p>{user?.description}</p>
+              <p>{user?.introduce}</p>
             </div>
           </div>
           <div className="w-full">
@@ -107,7 +111,7 @@ const View = () => {
             </p>
             <Separator className="my-2" />
             <div className="min-h-32 overflow-y-auto px-2 sm:min-h-48">
-              <p>{user?.description}</p>
+              <p>{user?.like_style}</p>
             </div>
           </div>
         </div>

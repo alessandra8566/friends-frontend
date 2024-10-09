@@ -9,7 +9,7 @@ const Nav = () => {
 
   return (
     <div className="flex h-16 items-center px-4">
-      <Icons.logo onClick={() => navigate("dashboard")}  />
+      <Icons.logo className="cursor-pointer" onClick={() => navigate("dashboard")}  />
       <MainNav className="mx-6 hidden sm:block" />
       <div className="ml-auto flex items-center space-x-4">
         <div>

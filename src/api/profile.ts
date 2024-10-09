@@ -1,10 +1,10 @@
-import { ImageUpload, ImageUploadPatch, UserProfile, UserProfilePatch } from "@/utils/types/profile"
+import { ImageUpload, ImageUploadPatch, Profile, ProfileBase, UserProfile } from "@/utils/types";
 import { request } from "./request"
 
-export const apiGetProfile = () => request.get<UserProfile>(`/profile`)
+export const apiGetProfile = () => request.get<Profile>(`/profile`)
 export const apiGetProfileById = (id: string) => request.get<UserProfile>(`/profile/view/${id}`)
-export const apiPatchProfile = (payload: { id: string; data: UserProfilePatch }) =>
-  request.patch<UserProfile>(`/profile/${payload.id}`, payload.data)
+export const apiPatchProfile = (payload: { id: string; data: ProfileBase }) =>
+  request.patch<Profile>(`/profile/${payload.id}`, payload.data)
 
 // image
 export const apiUploadImage = (payload: { id: string; data: FormData }) =>
@@ -14,4 +14,4 @@ export const apiPatchImages = (payload: { id: string; data: FormData }) =>
 export const apiDeleteImage = (payload: { profile_id: string; image_id: string }) =>
   request.delete(`/profile/${payload.profile_id}/image/${payload.image_id}`)
 
-export const apiGetProfileAvatars = () => request.get<UserProfile[]>("/profile/avatars")
+export const apiGetProfileAvatars = () => request.get<Profile[]>("/profile/avatars")

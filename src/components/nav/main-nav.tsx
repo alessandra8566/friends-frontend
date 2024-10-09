@@ -35,7 +35,7 @@ const MainNav = ({ className, ...props }: React.HTMLAttributes<HTMLElement>) => 
         我的最愛
       </NavLink> */}
       <NavLink
-        to="/profile"
+        to="/profile/info"
         className={({ isActive }) =>
           cn("text-sm font-medium transition-colors hover:text-primary", {
             "text-muted-foreground": !isActive,

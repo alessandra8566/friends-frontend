@@ -57,7 +57,8 @@ const requests = [API_URL]
         //   }
         //   return Promise.reject(err)
         // }
-            window.location.href = "/"
+        window.location.href = "/"
+        // sessionStorage.clear()
 
       },
     )

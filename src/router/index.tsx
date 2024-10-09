@@ -46,9 +46,16 @@ const routes = [
         },
         children: [
           {
-            index: true,
+            path: "info",
             async lazy() {
               const comp = await import("@/pages/profile/user-info")
+              return { Component: comp.default }
+            },
+          },
+          {
+            path: "avatar",
+            async lazy() {
+              const comp = await import("@/pages/profile/user-avatar")
               return { Component: comp.default }
             },
           },

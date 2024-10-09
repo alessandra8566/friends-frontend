@@ -4,7 +4,7 @@ import Cropper, { ReactCropperElement } from "react-cropper"
 import "cropperjs/dist/cropper.css"
 import { useFieldArray, useFormContext } from "react-hook-form"
 import { z } from "zod"
-import { userInfoFormSchema } from "../utils"
+import { userAvatarFormSchema } from "../utils"
 import { useMutation } from "@tanstack/react-query"
 import { apiUploadImage } from "@/api/profile"
 import { toast } from "sonner"
@@ -24,7 +24,7 @@ interface CropperDialogsProps {
 
 const CropperDialog = (props: CropperDialogsProps) => {
   const { image, profile_id } = props
-  const { control } = useFormContext<z.infer<typeof userInfoFormSchema>>()
+  const { control } = useFormContext<z.infer<typeof userAvatarFormSchema>>()
   const { update } = useFieldArray({ control, name: "images" })
   const cropperRef = createRef<ReactCropperElement>()
 
