@@ -41,6 +41,8 @@ const SignInForm = ({ className, ...props }: UserAuthFormProps) => {
         user_id: decoded.user_id,
         email: decoded.email,
         name: decoded.name,
+        birthday: decoded.birthday,
+        gender: decoded.gender,
         role: decoded.role,
       })
       navigate("/dashboard")
