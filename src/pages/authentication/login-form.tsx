@@ -10,7 +10,7 @@ import { FormInput } from "@/components/form/input"
 import { useMutation } from "@tanstack/react-query"
 import { apiLogin } from "@/api/auth"
 import { jwtDecode } from "jwt-decode"
-import { JwtType } from "@/utils/types/user"
+import { Gender, JwtType } from "@/utils/types/user"
 import { actions } from "@/utils/toast"
 import { toast } from "sonner"
 import { useSessionStorage } from "usehooks-ts"
@@ -39,7 +39,7 @@ const LoginForm = ({ className, ...props }: UserAuthFormProps) => {
         email: decoded.email,
         name: decoded.name,
         birthday: decoded.birthday,
-        gender: decoded.gender,
+        gender: decoded.gender as Gender,
         role: decoded.role,
       })
       navigate("/dashboard")

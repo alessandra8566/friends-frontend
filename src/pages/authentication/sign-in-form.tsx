@@ -13,7 +13,7 @@ import { toast } from "sonner"
 import { actions } from "@/utils/toast"
 import { jwtDecode } from "jwt-decode"
 import { useSessionStorage } from "usehooks-ts"
-import { JwtType } from "@/utils/types/user"
+import { Gender, JwtType } from "@/utils/types/user"
 import { useUserInfo } from "@/hooks/session-storage"
 import { FormRadioGroup } from "@/components/form/radio-group"
 import { FormCalendar } from "@/components/form/calendar"
@@ -42,7 +42,7 @@ const SignInForm = ({ className, ...props }: UserAuthFormProps) => {
         email: decoded.email,
         name: decoded.name,
         birthday: decoded.birthday,
-        gender: decoded.gender,
+        gender: decoded.gender as Gender,
         role: decoded.role,
       })
       navigate("/dashboard")
