@@ -1,4 +1,4 @@
-import { ImageUpload, ImageUploadPatch, Profile, ProfileBase, UserProfile } from "@/utils/types";
+import { ImageUpload, ImageUploadPatch, Profile, ProfileBase, UserProfile, UserProfileDetail } from "@/utils/types";
 import { request } from "./request"
 
 export const apiGetProfile = () => request.get<Profile>(`/profile`)
@@ -15,3 +15,5 @@ export const apiDeleteImage = (payload: { profile_id: string; image_id: string }
   request.delete(`/profile/${payload.profile_id}/image/${payload.image_id}`)
 
 export const apiGetProfileAvatars = () => request.get<Profile[]>("/profile/avatars")
+export const apiGetProfilesDetails = () => request.get<UserProfileDetail[]>("/profile/details")
+export const apiGetProfileDetails = (id: string) => request.get<UserProfileDetail>(`/profile/details/${id}`)

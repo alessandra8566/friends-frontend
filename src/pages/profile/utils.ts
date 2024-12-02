@@ -1,7 +1,7 @@
 import { z } from "zod"
 import EmptyImg from "@/assets/images/empty-image.jpg"
 import { SelectValueItem } from "@/components/select"
-import { constellation, education, profileEnumTran, frequency, job, languageUse, location, commonEnumTran } from "@/utils/types"
+import { constellation, education, profileEnumTran, frequency, job, languageUse, location, commonEnumTran, gender } from "@/utils/types"
 
 export const locationSelectItems = location.map<SelectValueItem>((item) => ({ text: item, value: item }))
 export const educationSelectItems = education.map<SelectValueItem>((item) => ({
@@ -52,7 +52,10 @@ export const userAvatarFormSchema = z.object({
 
 export const userInfoFormSchema = z.object({
   name: z.string().optional(),
+  email: z.string().optional(),
+  gender: z.enum(gender),
   introduce: z.string().optional(),
+  birthday: z.string().optional(),
   like_style: z.string().optional(),
   constellation: z.preprocess((value) => (value !== "null" ? value : undefined), z.enum(constellation).optional()),
   location: z.enum(location).optional(),
@@ -68,6 +71,9 @@ export const userInfoFormSchema = z.object({
 
 export const userInfoFormDefault: z.infer<typeof userInfoFormSchema> = {
   name: "",
+  email: "",
+  gender: "female",
+  birthday: "",
   introduce: "",
   like_style: "",
   constellation: "null",

@@ -1,7 +1,9 @@
+import { useUserInfo } from "@/hooks/session-storage"
 import { cn } from "@/utils/shadcn"
 import { NavLink } from "react-router-dom"
 
 const MainNav = ({ className, ...props }: React.HTMLAttributes<HTMLElement>) => {
+  const [user] = useUserInfo()
   return (
     <nav className={cn("flex items-center space-x-4 lg:space-x-6", className)} {...props}>
       <NavLink
@@ -44,6 +46,19 @@ const MainNav = ({ className, ...props }: React.HTMLAttributes<HTMLElement>) => 
       >
         個人設定
       </NavLink>
+
+      {["admin"].includes(user?.role || "") && (
+        <NavLink
+          to="/account"
+          className={({ isActive }) =>
+            cn("text-sm font-medium transition-colors hover:text-primary", {
+              "text-muted-foreground": !isActive,
+            })
+          }
+        >
+          會員管理
+        </NavLink>
+      )}
     </nav>
   )
 }

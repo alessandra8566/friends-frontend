@@ -34,7 +34,7 @@ const CustomSelect = forwardRef<HTMLButtonElement, CustomSelectProps>(
           </Label>
         )}
         <Select onValueChange={onValueChange} disabled={disabled} value={value} {...props}>
-          <SelectTrigger ref={ref} id={id ?? uuid} className={cn("bg-white", className)}>
+          <SelectTrigger ref={ref} id={id ?? uuid} className={cn("bg-white !m-0 border-[.5px] border-[#9B9B9B9B]", className)}>
             <SelectValue placeholder={placeholder} />
           </SelectTrigger>
           <SelectContent className="z-select">

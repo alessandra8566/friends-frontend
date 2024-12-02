@@ -1,4 +1,7 @@
-type Role = "admin" | "vip1_user" | "vip2_user" | "user"
+export type Role = "admin" | "vip1_user" | "vip2_user" | "user"
+
+export const gender = ["male", "female"] as const
+export type Gender = (typeof gender)[number]
 
 export interface UserSignIn {
   name: string
@@ -10,6 +13,10 @@ export interface UserSignIn {
 export interface UserLogin {
   email: string
   password: string
+}
+export interface UserPatch {
+  gender?: Gender
+  birthday?: string
 }
 
 export interface JwtType {
@@ -27,6 +34,12 @@ export type CurrentUserInfo = {
   email: string
   name: string
   birthday: string
-  gender: string
+  gender: Gender
   role: Role
+}
+
+export interface User {
+  id: string
+  email: string
+  name: string
 }

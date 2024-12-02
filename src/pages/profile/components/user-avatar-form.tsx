@@ -7,13 +7,15 @@ import { Input } from "@/components/ui/input"
 import CropperDialog from "./cropper-dialog"
 import { CircleX } from "lucide-react"
 import { useMutation, useQuery } from "@tanstack/react-query"
-import { apiDeleteImage, apiGetProfile } from "@/api/profile"
+import { apiDeleteImage, apiGetProfile, apiGetProfileDetails } from "@/api/profile"
 import { toast } from "sonner"
 import { actions } from "@/utils/toast"
 import EmptyImg from "@/assets/images/empty-image.jpg"
 import { Image } from "@/utils/types/profile"
+import { useParams } from "react-router-dom"
 
 const UserAvatarForm = () => {
+  const { id = "" } = useParams()
   const uploadAvatarInputRef = useRef<(HTMLInputElement | null)[]>([])
   const [open, setOpen] = useState(false)
 
@@ -21,17 +23,28 @@ const UserAvatarForm = () => {
     queryKey: ["profile"],
     queryFn: apiGetProfile,
     select: (res) => res.data,
+    enabled: !id,
+    refetchOnWindowFocus: false,
+  })
+
+  const { data: profileDetail } = useQuery({
+    queryKey: ["profile", "details", id],
+    queryFn: () => apiGetProfileDetails(id),
+    select: (res) => res.data,
+    enabled: !!id,
+    refetchOnWindowFocus: false,
   })
 
   const userInfoValues = useMemo(
     () => ({
       ...userAvatarFormDefault,
       images: userAvatarFormDefault.images.map((image) => {
-        const matchingImage = profile?.images.find((item) => item.index === image.index)
+        const images = profileDetail?.images || profile?.images || []
+        const matchingImage = images.find((item) => item.index === image.index)
         return matchingImage ? { ...image, ...matchingImage } : image
       }),
     }),
-    [profile],
+    [profile, profileDetail],
   )
 
   const form = useForm<z.infer<typeof userAvatarFormSchema>>({
@@ -61,11 +74,10 @@ const UserAvatarForm = () => {
     }
   }
 
-
   const onDeleteImage = (image: Image) => {
     const deleteImage = async () => {
       if (image && image.id) {
-        await deleteProfileImageMutation.mutateAsync({ profile_id: profile?.id || "", image_id: image.id })
+        await deleteProfileImageMutation.mutateAsync({ profile_id: id || profile?.id || "", image_id: image.id })
         refetch()
       }
     }
@@ -88,7 +100,12 @@ const UserAvatarForm = () => {
                   uploadAvatarInputRef.current?.[0]?.click()
                 }}
               />
-              {watchAvatars[0].url !== EmptyImg && <CircleX className="absolute right-2 top-2 h-6 w-6 text-red-700" onClick={() => onDeleteImage(watchAvatars[0] as Image)} />}
+              {watchAvatars[0].url !== EmptyImg && (
+                <CircleX
+                  className="absolute right-2 top-2 h-6 w-6 text-red-700"
+                  onClick={() => onDeleteImage(watchAvatars[0] as Image)}
+                />
+              )}
             </div>
           </div>
         </div>
@@ -104,10 +121,15 @@ const UserAvatarForm = () => {
                     className="max-w-52 cursor-pointer"
                     onClick={() => {
                       if (watchAvatars[field.index].url !== EmptyImg) return
-                      uploadAvatarInputRef.current?.[field.index]?.click()}
-                    }
+                      uploadAvatarInputRef.current?.[field.index]?.click()
+                    }}
                   />
-                  {field.url !== EmptyImg && <CircleX className="absolute right-2 top-2 h-6 w-6 text-red-700" onClick={() => onDeleteImage(field as Image)} />}
+                  {field.url !== EmptyImg && (
+                    <CircleX
+                      className="absolute right-2 top-2 h-6 w-6 text-red-700"
+                      onClick={() => onDeleteImage(field as Image)}
+                    />
+                  )}
                 </div>
               ) : null,
             )}
@@ -126,7 +148,7 @@ const UserAvatarForm = () => {
         ))}
       </div>
       {watchCurrentAvatar && (
-        <CropperDialog image={watchCurrentAvatar} open={open} setOpen={setOpen} profile_id={profile?.id || ""} />
+        <CropperDialog image={watchCurrentAvatar} open={open} setOpen={setOpen} profile_id={id || profile?.id || ""} />
       )}
     </FormProvider>
   )

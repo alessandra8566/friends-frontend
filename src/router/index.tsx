@@ -1,5 +1,6 @@
 import NoMatch from "@/pages/no-match"
 import NoPermission from "@/pages/no-permission"
+import { Navigate } from "react-router-dom"
 
 const routes = [
   {
@@ -46,7 +47,18 @@ const routes = [
         },
         children: [
           {
+            index: true,
+            element: <Navigate to="info" />,
+          },
+          {
             path: "info",
+            async lazy() {
+              const comp = await import("@/pages/profile/user-info")
+              return { Component: comp.default }
+            },
+          },
+          {
+            path: "info/:id",
             async lazy() {
               const comp = await import("@/pages/profile/user-info")
               return { Component: comp.default }
@@ -59,7 +71,21 @@ const routes = [
               return { Component: comp.default }
             },
           },
+          {
+            path: "avatar/:id",
+            async lazy() {
+              const comp = await import("@/pages/profile/user-avatar")
+              return { Component: comp.default }
+            },
+          },
         ]
+      },
+      {
+        path: "account",
+        async lazy() {
+          const comp = await import("@/pages/account")
+          return { Component: comp.default }
+        },
       },
       {
         path: "view/:id",

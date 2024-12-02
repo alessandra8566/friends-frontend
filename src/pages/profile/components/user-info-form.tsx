@@ -17,35 +17,57 @@ import { FormTextArea } from "@/components/form/textarea"
 import { FormInput } from "@/components/form/input"
 import { Button } from "@/components/ui/button"
 import { useMutation, useQuery } from "@tanstack/react-query"
-import { apiGetProfile, apiPatchProfile } from "@/api/profile"
+import { apiGetProfile, apiGetProfileDetails, apiPatchProfile } from "@/api/profile"
 import { useMemo } from "react"
 import { actions } from "@/utils/toast"
 import { toast } from "sonner"
+import { genderSelectItem } from "@/pages/authentication/utils"
+import { useUserInfo } from "@/hooks/session-storage"
+import { useParams } from "react-router-dom"
+import { apiPatchUser } from "@/api/auth"
+import { FormCalendar } from "@/components/form/calendar"
 
 const UserInfoForm = () => {
+  const { id = "" } = useParams()
+  const [user] = useUserInfo()
+
   const { data: profile, refetch } = useQuery({
     queryKey: ["profile"],
     queryFn: apiGetProfile,
     select: (res) => res.data,
+    enabled: !id,
+    refetchOnWindowFocus: false,
+  })
+
+  const { data: profileDetail } = useQuery({
+    queryKey: ["profile", "details", id],
+    queryFn: () => apiGetProfileDetails(id),
+    select: (res) => res.data,
+    enabled: !!id,
+    refetchOnWindowFocus: false,
   })
 
   const userInfoFormValues: z.infer<typeof userInfoFormSchema> = useMemo(() => {
     return {
       ...userInfoFormDefault,
-      name: profile?.name ?? userInfoFormDefault.name,
-      height: profile?.height ?? userInfoFormDefault.height,
-      weight: profile?.weight ?? userInfoFormDefault.weight,
-      location: profile?.location ?? userInfoFormDefault.location,
-      introduced: profile?.introduce ?? userInfoFormDefault.introduce,
-      hobby: profile?.hobby ?? userInfoFormDefault.hobby,
-      job: profile?.job ?? userInfoFormDefault.job,
-      education: profile?.education ?? userInfoFormDefault.education,
-      constellation: profile?.constellation ?? userInfoFormDefault.constellation,
-      languages: profile?.languages ?? userInfoFormDefault.languages,
-      smoke: profile?.smoke ?? userInfoFormDefault.smoke,
-      drink: profile?.drink ?? userInfoFormDefault.drink,
+      name: profileDetail?.name ?? user?.name ?? userInfoFormDefault.name,
+      email: profileDetail?.email ?? user?.email ?? userInfoFormDefault.email,
+      gender: profileDetail?.gender ?? user?.gender ?? userInfoFormDefault.gender,
+      birthday: profileDetail?.birthday ?? user?.birthday ?? userInfoFormDefault.birthday,
+      introduce: profile?.introduce ?? profileDetail?.introduce ?? userInfoFormDefault.introduce,
+      like_style: profile?.like_style ?? profileDetail?.like_style ?? userInfoFormDefault.like_style,
+      constellation: profile?.constellation ?? profileDetail?.constellation ?? userInfoFormDefault.constellation,
+      location: profile?.location ?? profileDetail?.location ?? userInfoFormDefault.location,
+      weight: profile?.weight ?? profileDetail?.weight ?? userInfoFormDefault.weight,
+      height: profile?.height ?? profileDetail?.height ?? userInfoFormDefault.height,
+      job: profile?.job ?? profileDetail?.job ?? userInfoFormDefault.job,
+      education: profile?.education ?? profileDetail?.education ?? userInfoFormDefault.education,
+      hobby: profile?.hobby ?? profileDetail?.hobby ?? userInfoFormDefault.hobby,
+      smoke: profile?.smoke ?? profileDetail?.smoke ?? userInfoFormDefault.smoke,
+      drink: profile?.drink ?? profileDetail?.drink ?? userInfoFormDefault.drink,
+      languages: profile?.languages ?? profileDetail?.languages ?? userInfoFormDefault.languages,
     }
-  }, [profile])
+  }, [profile, profileDetail, user])
 
   const form = useForm<z.infer<typeof userInfoFormSchema>>({
     resolver: zodResolver(userInfoFormSchema),
@@ -54,17 +76,18 @@ const UserInfoForm = () => {
 
   const { watch, setValue, handleSubmit } = form
   const watchValues = watch()
-
+  
+  const patchUserMutation = useMutation({ mutationFn: apiPatchUser })
   const patchProfileMutation = useMutation({ mutationFn: apiPatchProfile })
 
   const onSubmit = (values: z.infer<typeof userInfoFormSchema>) => {
     const patchProfile = async () => {
-      await patchProfileMutation.mutateAsync({ id: profile?.id || "", data: values })
+      await patchProfileMutation.mutateAsync({ id: id || profile?.id || "", data: values })
+      if (id) await patchUserMutation.mutateAsync({ id, data: { gender: values.gender, birthday: values.birthday } })
       refetch()
     }
 
     toast.promise(patchProfile, actions.update)
-    console.log(values)
   }
 
   return (
@@ -73,6 +96,18 @@ const UserInfoForm = () => {
         <h2 className="text-lg font-bold">基本資料</h2>
         <div className="grid gap-4">
           <FormInput name="name" label="暱稱" labelDisplay="block" />
+          {["admin"].includes(user?.role || "") && id && (
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div>
+                <p className="mb-2">性別</p>
+                <FormSelect name="gender" selectProps={{ items: genderSelectItem }} />
+              </div>
+              <div>
+                <p className="mb-2">年齡</p>
+                <FormCalendar name="birthday" />
+              </div>
+            </div>
+          )}
           <div className="flex flex-col gap-2">
             <p>身高: {watchValues.height} 公分</p>
             <Slider

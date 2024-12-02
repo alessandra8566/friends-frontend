@@ -1,5 +1,4 @@
-export const gender = ["male", "female"] as const
-export type Gender = (typeof gender)[number]
+import { Gender, Role } from "./user"
 
 export const frequency = ["never", "sometimes", "often"] as const
 export type Frequency = (typeof frequency)[number]
@@ -90,6 +89,10 @@ export interface UserProfile extends Profile {
   gender: Gender
 }
 
+export interface UserProfileDetail extends UserProfile {
+  email: string
+  role: Role
+}
 export interface Image {
   id: string
   name: string

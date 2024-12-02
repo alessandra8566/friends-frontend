@@ -1,31 +1,31 @@
 import Sidebar from "@/components/sidebar"
 import { Separator } from "@/components/ui/separator"
-import { Outlet } from "react-router-dom"
-
-const sidebarNavItems = [
-  {
-    title: "個人資料",
-    to: "/profile/info",
-  },
-  {
-    title: "個人頭像",
-    to: "/profile/avatar",
-  },
-  // {
-  //   title: "帳戶資料",
-  //   to: "/profile/account",
-  // },
-  // {
-  //   title: "交友偏好",
-  //   to: "/profile/prefer",
-  // },
-  // {
-  //   title: "通知設定",
-  //   to: "/profile/notification",
-  // },
-]
+import { Outlet, useParams } from "react-router-dom"
 
 const Profile = () => {
+  const { id = "" } = useParams()
+  const sidebarNavItems = [
+    {
+      title: "個人資料",
+      to: `/profile/info/${id}`,
+    },
+    {
+      title: "個人頭像",
+      to: `/profile/avatar/${id}`,
+    },
+    // {
+    //   title: "帳戶資料",
+    //   to: "/profile/account",
+    // },
+    // {
+    //   title: "交友偏好",
+    //   to: "/profile/prefer",
+    // },
+    // {
+    //   title: "通知設定",
+    //   to: "/profile/notification",
+    // },
+  ]
   return (
     <div className="space-y-6 p-6 pb-16 md:block">
       <div className="space-y-0.5">
